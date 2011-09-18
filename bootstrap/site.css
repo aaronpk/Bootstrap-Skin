@@ -2,3 +2,11 @@ body {
 	padding-top: 60px;
 }
 
+.printfooter {
+	display: none;
+}
+
+#wpTextbox1 {
+	width: 90%;
+}
+
