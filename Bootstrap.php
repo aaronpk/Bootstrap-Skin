@@ -129,7 +129,7 @@ class BootstrapTemplate extends QuickTemplate {
     </div>
 
     <div class="container-fluid">
-      <div class="sidebar">
+      <div class="sidebar" style="position: absolute;">
         <div class="well">
 
 <?php foreach( $this->data['sidebar'] as $bar => $cont ) { if(count($cont) == 0) continue; ?>

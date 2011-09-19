@@ -10,3 +10,18 @@ body {
 	width: 90%;
 }
 
+.editsection {
+	font-size: 60%;
+}
+
+.fill {
+	border-radius: 3px 3px 3px 3px;
+	background-color: #eee;
+}
+.fill p {
+	margin: 3px;
+	text-align: center;
+}
+.row.demo {
+	margin-bottom: 10px;
+}
