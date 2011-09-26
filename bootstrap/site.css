@@ -1,5 +1,9 @@
 body {
-	padding-top: 60px;
+	padding-top: 40px;
+}
+
+body.page-Home .page-header {
+  display: none;
 }
 
 .printfooter {
@@ -25,3 +29,112 @@ body {
 .row.demo {
 	margin-bottom: 10px;
 }
+
+b {
+  font-weight: bold;
+}
+
+
+.home h2 {
+  border-bottom: 3px #bbb solid;
+  margin-bottom: 6px;
+}
+
+
+.bottom {
+  padding-top: 30px;
+  background-color: #202020;
+}
+.bottom, .bottom h1, .bottom h2, .bottom h3, .bottom h4, .bottom h5, .bottom h6, .bottom a {
+  color: #f6ebeb;
+}
+
+h1 {
+  font-size: 42px;
+}
+h2 {
+  margin-top: 12px;
+  line-height: 1.3em;
+}
+h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+h3, h4, h5, h6 {
+  margin-top: 18px;
+  line-height: 1.3em;
+}
+
+
+#search .mw-search-formheader, .searchresults .mw-search-createlink {
+  display: none;
+}
+
+
+
+footer {
+  border-top: 1px solid #aaa;
+}
+
+.tocnumber {
+	display: none;
+}
+
+@media print {
+.sidebar, footer, .topbar {
+	display: none;
+}
+.container-fluid > .content {
+	margin-left: 0;
+}
+}
+
+
+/**
+  Styles for editing page form
+**/
+.editOptions label {
+  float: none;
+}
+
+
+/**
+  Hide discussion page link
+**/
+#ca-talk {
+  display: none;
+}
+
+
+/**
+  Custom top bar color
+**/
+
+.topbar div > ul .menu-dropdown, .nav .menu-dropdown, .topbar div > ul .dropdown-menu, .nav .dropdown-menu {
+  background-color: #720707;
+}
+.topbar div > ul .menu-dropdown li a, .nav .menu-dropdown li a, .topbar div > ul .dropdown-menu li a, .nav .dropdown-menu li a {
+  color: #feeded;
+}
+.topbar div > ul .menu-dropdown li a:hover, .nav .menu-dropdown li a:hover, .topbar div > ul .dropdown-menu li a:hover, .nav .dropdown-menu li a:hover {
+  background-color: #520707;
+}
+.topbar a, .topbar input:-moz-placeholder {
+  color: #feeded;
+}
+.topbar-inner, .topbar .fill {
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#610707), to(#4b0606));
+  background-image: -moz-linear-gradient(top, #610707, #4b0606);
+  background-image: -ms-linear-gradient(top, #610707, #4b0606);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #610707), color-stop(100%, #4b0606));
+  background-image: -webkit-linear-gradient(top, #610707, #4b0606);
+  background-image: -o-linear-gradient(top, #610707, #4b0606);
+  background-image: linear-gradient(top, #610707, #4b0606);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#610707', endColorstr='#4b0606', GradientType=0);
+}
+
+
+
+
+
+

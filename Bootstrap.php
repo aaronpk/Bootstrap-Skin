@@ -41,17 +41,17 @@ class BootstrapTemplate extends QuickTemplate {
 	 */
 	var $skin;
 
-    /**
-     * Template filter callback for Bootstrap skin.
-     * Takes an associative array of data set from a SkinTemplate-based
-     * class, and a wrapper for MediaWiki's localization database, and
-     * outputs a formatted page.
-     *
-     * @access private
-     */
-    function execute() {
-		global $wgUser, $wgSitename, $wgCopyrightLink, $wgCopyright;
-		
+  /**
+   * Template filter callback for Bootstrap skin.
+   * Takes an associative array of data set from a SkinTemplate-based
+   * class, and a wrapper for MediaWiki's localization database, and
+   * outputs a formatted page.
+   *
+   * @access private
+   */
+  function execute() {
+		global $wgUser, $wgSitename, $wgCopyrightLink, $wgCopyright, $wgBootstrap, $wgArticlePath;
+
 		$this->skin = $this->data['skin'];
 
         // Suppress warnings to prevent notices about missing indexes in $this->data
@@ -63,27 +63,59 @@ class BootstrapTemplate extends QuickTemplate {
     <title><?php $this->text('pagetitle') ?></title>
     <link rel="stylesheet" type="text/css" href="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/site.css" />
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
-	<script type="text/javascript" src="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/js/bootstrap-tabs.js"></script>
-	<script type="text/javascript" src="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/js/bootstrap-dropdown.js"></script>
+  	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+  	<script type="text/javascript" src="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/js/bootstrap-tabs.js"></script>
+  	<script type="text/javascript" src="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/js/bootstrap-dropdown.js"></script>
+  	<script type="text/javascript" src="<?php $this->text('stylepath') ?>/<?php $this->text('stylename') ?>/site.js"></script>
     <?php $this->html('headlinks') ?>
 </head>
-<body>
+<body class="<?=Sanitizer::escapeClass('page-' . $this->data['title'])?>">
 
     <div class="topbar">
       <div class="topbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="#"><?php echo $wgSitename ?></a>
+          <a class="brand" href="<?php echo $this->data['nav_urls']['mainpage']['href'] ?>"><?php echo $wgSitename ?></a>
 
           <ul class="nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <?php
+              $titleBar = $this->getPageRawText('Bootstrap:TitleBar');
+              $nav = array();
+              foreach(explode("\n", $titleBar) as $line) {
+                if(trim($line) == '') continue;
+                
+                if(preg_match('/^\*\s*\[\[(.+)\]\]/', $line, $match)) {
+                  $nav[] = array('title'=>$match[1], 'link'=>$match[1]);
+                }elseif(preg_match('/\*\*\s*\[\[(.+)\]\]/', $line, $match)) {
+                  $nav[count($nav)-1]['sublinks'][] = $match[1];
+                }elseif(preg_match('/^\*\s*(.+)/', $line, $match)) {
+                  $nav[] = array('title'=>$match[1]);
+                }
+              }
+              
+              foreach($nav as $topItem) {
+                $pageTitle = Title::newFromText($topItem['title']);
+                if(array_key_exists('sublinks', $topItem)) {
+                  echo '<li class="dropdown" data-dropdown="dropdown">';
+                    echo '<a href="#" class="dropdown-toggle">' . $topItem['title'] . '</a>';
+                    echo '<ul class="dropdown-menu">';
+                    foreach($topItem['sublinks'] as $subLink) {
+                      $pageTitle = Title::newFromText($subLink);
+                      echo '<li><a href="' . $pageTitle->getLocalURL() . '">' . $subLink . '</a>';
+                    }
+                    echo '</ul>';
+                  echo '</li>';
+                } else {
+                  echo '<li' . ($this->data['title'] == $topItem['title'] ? ' class="active"' : '') . '><a href="' . $pageTitle->getLocalURL() . '">' . $topItem['title'] . '</a></li>';
+                }
+              }
+            ?>
           </ul>
           
 			<?php
-			if ( count( $this->data['personal_urls'] ) > 0 ) {
-			?>
+
+ 			if($wgUser->isLoggedIn()) {
+   			if ( count( $this->data['personal_urls'] ) > 0 ) {
+  			?>
 				<ul<?php $this->html('userlangattributes') ?> class="nav secondary-nav">
 					<li class="dropdown" data-dropdown="dropdown">
 						<a class="dropdown-toggle" href="#"><?php echo $wgUser->getName(); ?></a>
@@ -94,13 +126,13 @@ class BootstrapTemplate extends QuickTemplate {
 						</ul>
 					</li>
 				</ul>
-			<?php
-			}
-			?>
+  			<?php
+  			}
+  			?>
 	
-			<?php
-			if ( count( $this->data['content_actions']) > 0 ) {
-			?>
+  			<?php
+  			if ( count( $this->data['content_actions']) > 0 ) {
+	      ?>
 	        <ul class="nav secondary-nav">
 	        	<li class="dropdown" data-dropdown="dropdown">
 	        		<a class="dropdown-toggle" href="#">Page</a>
@@ -116,53 +148,31 @@ class BootstrapTemplate extends QuickTemplate {
 	        		</ul>
 	        	</li>
 	        </ul>
-	        <?php
-	        }
-	        ?>
-
+        <?php
+        }
+      } else {  // else if is logged in
+        ?>
+          <ul class="secondary-nav">
+            <li><a href="/wiki/index.php?title=Special:UserLogin">Log In</a></li>
+          </ul>
+        <?php
+      }
+      ?>
           <form class="pull-right" action="/Special:Search" id="search-form">
           	<input type="text" placeholder="Search" name="search" onchange="$('#search-form').submit()" />
           </form>
           
         </div>
       </div>
-    </div>
+    </div><!-- topbar -->
 
-    <div class="container-fluid">
-      <div class="sidebar" style="position: absolute;">
-        <div class="well">
+  
 
-<?php foreach( $this->data['sidebar'] as $bar => $cont ) { if(count($cont) == 0) continue; ?>
-        <div class='portlet' id='p-<?php echo Sanitizer::escapeId( $bar ) ?>'<?php echo $this->skin->tooltip('p-'.$bar) ?>>
-                <h5><?php $out = wfMsg( $bar ); if( wfEmptyMsg( $bar, $out ) ) echo $bar; else echo $out; ?></h5>
-                <div class='pBody'>
-                        <ul>
-<?php                       foreach( $cont as $key => $val ) { ?>
-                                <li id="<?php echo Sanitizer::escapeId( $val['id'] ) ?>"<?php
-                                        if( $val['active'] ) { ?> class="active" <?php }
-                                ?>><a href="<?php echo htmlspecialchars( $val['href'] ) ?>"<?php echo $this->skin->tooltipAndAccesskey($val['id']) ?>><?php echo htmlspecialchars( $val['text'] ) ?></a></li>
-<?php                       } ?>
-                        </ul>
-                </div>
-        </div>
-        <?php } ?>
-        		        
-<!--
-          <h5>Sidebar</h5>
-          <ul>
-            <li><a href="#">Link</a></li>
-            <li><a href="#">Link</a></li>
-            <li><a href="#">Link</a></li>
-            <li><a href="#">Link</a></li>
-          </ul>
--->
+    <div class="container">
 
-        </div>
-      </div>
-      <div class="content">
+      <img src="http://localhost/aaronpk-banner.png" width="940" height="110" />
 
 		<?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
-
 
         <div class="page-header">
           <h1><?php $this->html( 'title' ) ?> <small><?php $this->html('subtitle') ?></small></h1>
@@ -179,62 +189,24 @@ class BootstrapTemplate extends QuickTemplate {
 
 		<?php $this->html( 'bodytext' ) ?>
 
-        <!-- Example row of columns -->
-        <!--
-        <div class="row">
-          <div class="span6">
-            <h2>Heading</h2>
-            <p>Etiam porta sem malesuada magna mollis euismod. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-
-          </div>
-          <div class="span5">
-            <h2>Heading</h2>
-             <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-         </div>
-          <div class="span5">
-
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-          </div>
-        </div>
-		-->
-<!--         <hr> -->
+    </div><!-- container -->
 
 
-        <!-- Example row of columns -->
-<!--
-        <div class="row">
-          <div class="span6">
-            <h2>Heading</h2>
-            <p>Etiam porta sem malesuada magna mollis euismod. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-          </div>
 
-          <div class="span5">
-            <h2>Heading</h2>
-             <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-         </div>
-          <div class="span5">
-            <h2>Heading</h2>
-
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
-            <p><a class="btn" href="#">View details &raquo;</a></p>
-          </div>
-        </div>
--->
-
+    <div class="bottom">
+      <div class="container">
+        <?php
+        $this->includePage('Bootstrap:Footer');
+        ?>
+      
         <footer>
           <p>&copy; <?php echo date('Y'); ?> by <a href="<?php echo (isset($wgCopyrightLink) ? $wgCopyrightLink : 'http://aaronparecki.com'); ?>"><?php echo (isset($wgCopyright) ? $wgCopyright : 'Aaron Parecki'); ?></a> 
           	&bull; Powered by <a href="http://mediawiki.org">MediaWiki</a> 
-          	&bull; <a href="http://twitter.github.com/bootstrap">Bootstrap Skin</a> by <a href="http://aaronparecki.com">Aaron Parecki</a>
+          	&bull; <a href="http://aaronparecki.com/MediaWiki_Bootstrap_Skin">Bootstrap Skin</a> by <a href="http://aaronparecki.com">Aaron Parecki</a>
           </p>
         </footer>
-      </div>
-    </div>    
+      </div><!-- container -->
+    </div><!-- bottom -->
 
 </body>
 </html>
@@ -363,6 +335,29 @@ class BootstrapTemplate extends QuickTemplate {
 			}
 			echo "\n<!-- /{$name} -->\n";
 		}
-	}	
+	}
+	
+	function getPageRawText($title) {
+    $pageTitle = Title::newFromText($title);
+    if(!$pageTitle->exists()) {
+      return 'Create the page [[Bootstrap:TitleBar]]';
+    } else {
+      $article = new Article($pageTitle);
+      return $article->getRawText();
+    }
+	}
+	
+	function includePage($title) {
+    global $wgParser, $wgUser;
+    $pageTitle = Title::newFromText($title);
+    if(!$pageTitle->exists()) {
+      echo 'The page [[' . $title . ']] was not found.';
+    } else {
+      $article = new Article($pageTitle);
+      $wgParserOptions = new ParserOptions($wgUser);
+      $parserOutput = $wgParser->parse($article->getRawText(), $pageTitle, $wgParserOptions);
+      echo $parserOutput->getText();
+    }
+	}
 }
 

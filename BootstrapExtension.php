@@ -13,10 +13,18 @@ function BootstrapSetup() {
 
     for($i=1; $i<=16; $i++)
 	    $wgParser->setHook('span'.$i, array('BootstrapExtension','span'.$i));
+    $wgParser->setHook('span-one-third', array('BootstrapExtension','span-one-third'));
+    $wgParser->setHook('span-two-thirds', array('BootstrapExtension','span-two-thirds'));
     $wgParser->setHook('row', array('BootstrapExtension','row'));
+    $wgParser->setHook('mediagrid', array('BootstrapExtension','mediagrid'));
 } 
 
 class BootstrapExtension {
+
+  public static function mediagrid() 
+  {
+    
+  }
 
 	public static function __callStatic($name, $fargs)
 	{
