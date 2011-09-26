@@ -34,6 +34,9 @@ b {
   font-weight: bold;
 }
 
+.topbar {
+  font-size: 13px;
+}
 
 .home h2 {
   border-bottom: 3px #bbb solid;
@@ -57,7 +60,6 @@ h2 {
   line-height: 1.3em;
 }
 h3 {
-  font-size: 15px;
   margin-bottom: 6px;
 }
 h3, h4, h5, h6 {
@@ -65,6 +67,14 @@ h3, h4, h5, h6 {
   line-height: 1.3em;
 }
 
+
+body, p {
+  font-size: 16px;
+}
+
+body, p, li {
+  line-height: 24px;
+}
 
 #search .mw-search-formheader, .searchresults .mw-search-createlink {
   display: none;
@@ -74,6 +84,9 @@ h3, h4, h5, h6 {
 
 footer {
   border-top: 1px solid #aaa;
+}
+footer p {
+  font-size: 12px;
 }
 
 .tocnumber {
@@ -88,6 +101,26 @@ footer {
 	margin-left: 0;
 }
 }
+
+
+/**
+  Styles for image alignment
+**/
+.center {
+  text-align: center;
+}
+.floatright {
+  float: right;
+	margin: 0 .5em .5em 0;
+}
+.floatleft {
+  float: left;
+	margin: 0 .5em .5em 0;
+}
+.thumbcaption {
+  font-size: 0.9em;
+}
+
 
 
 /**
@@ -134,6 +167,62 @@ footer {
 }
 
 
+/**
+  MediaWiki table of contents
+**/
+	table#toc {
+		width: auto;
+	}
+
+    #toc, .toc, .mw-warning {
+        font-size: 100%;
+        border: 1px solid #AAAAAA;
+        background-color: #F5F5F5;
+        padding: .5em;
+        margin-bottom: 1.2em;
+    }
+
+    .toc {
+        float: right;
+        margin-left: 20px;
+    }
+
+    #toc h2, .toc h2 { 
+        font-size: 110%;
+        border: none; 
+        margin: 0;  /* fix toc top margin */
+        padding-right: .2em; /* margin between title and hide/show link */
+        display: inline;  /* display the hide/show link after Contents */
+    }
+    
+    #toc #toctitle,
+    .toc #toctitle,
+    #toc .toctitle,
+    .toc .toctitle {
+        text-align: left; /* left adjust of title */
+    }
+
+    #toc ul, .toc ul {
+        list-style-type: none;
+        list-style-image: none;
+        margin:  0; 
+        padding: .3em 0 0 .7em; /* margin of the item list */
+        text-align: left;
+    }
+    #toc ul ul, .toc ul ul,
+    #toc ul ul ul, .toc ul ul ul {
+        margin: 0 0 0 .7em; /* toclevel-2 margin */
+    }
+
+    #toc .tocindent   { margin-left: 1em; }
+    #toc .tocline     { margin-bottom: 0; }
+    #toc p            { margin: 0 }
+    #toc .toctoggle   { font-size: 90%; }
+
+    #toc .editsection {
+        margin-top: .3em;
+        font-size: 90%;
+    }
 
 
 
