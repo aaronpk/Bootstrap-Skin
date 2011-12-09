@@ -193,9 +193,7 @@ class BootstrapTemplate extends QuickTemplate {
 
     <div class="container">
 
-      <img src="http://localhost/aaronpk-banner.png" width="940" height="110" />
-
-		<?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
+      <?php if( $this->data['sitenotice'] ) { ?><div id="siteNotice" class="alert-message warning"><?php $this->html('sitenotice') ?></div><?php } ?>
 
         <div class="page-header">
           <h1><?php $this->html( 'title' ) ?> <small><?php $this->html('subtitle') ?></small></h1>
