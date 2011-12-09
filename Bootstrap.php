@@ -92,7 +92,7 @@ class BootstrapTemplate extends QuickTemplate {
     }
     ?>
 </head>
-<body class="<?=Sanitizer::escapeClass('page-' . $this->data['title'])?>">
+<body class="<?php echo Sanitizer::escapeClass('page-' . $this->data['title'])?>">
 
     <div class="topbar">
       <div class="topbar-inner">
