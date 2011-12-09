@@ -176,7 +176,12 @@ class BootstrapTemplate extends QuickTemplate {
       } else {  // else if is logged in
         ?>
           <ul class="secondary-nav">
-            <li><a href="/wiki/index.php?title=Special:UserLogin">Log In</a></li>
+            <li>
+              <?php echo Linker::linkKnown(
+                SpecialPage::getTitleFor( 'Userlogin' ),
+                wfMsg( 'login' )
+              ) ?>
+            </li>
           </ul>
         <?php
       }
