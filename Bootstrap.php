@@ -186,7 +186,7 @@ class BootstrapTemplate extends QuickTemplate {
         <?php
       }
       ?>
-          <form class="pull-right" action="/Special:Search" id="search-form">
+          <form class="pull-right" action="<?php $this->text( 'wgScript' ) ?>" id="search-form">
           	<input type="text" placeholder="Search" name="search" onchange="$('#search-form').submit()" />
           </form>
           
